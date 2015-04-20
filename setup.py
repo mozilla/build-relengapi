@@ -94,6 +94,7 @@ setup(
         "relengapi.auth.mechanisms": [
             'browserid = relengapi.lib.auth.browserid:init_app',
             'external = relengapi.lib.auth.external:init_app',
+            'constant = relengapi.lib.auth.constant:init_app',
         ],
         "relengapi.perms.mechanisms": [
             'static = relengapi.lib.auth.static_authz:init_app',
