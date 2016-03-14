@@ -60,9 +60,9 @@ else
         echo ".. todo::"
         echo ""
         echo "    Summarize the changes since $oldversion; below is the shortlog of merges,"
-        echo "    or see https://github.com/mozilla/build-${name}/compare/${name}-${oldversion}...master"
+        echo "    or see https://github.com/mozilla/build-relengapi/compare/relengapi-${oldversion}...master"
         echo ""
-        git shortlog --merges ${name}-${oldversion}..
+        git shortlog --merges relengapi-${oldversion}..
     ) > ${relnote_file}
 fi
 
