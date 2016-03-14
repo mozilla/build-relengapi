@@ -1,0 +1,4 @@
+relengapi-3.3.8
+===============
+
+Fixed configuration variable handling in 3.3.7
