@@ -96,13 +96,13 @@ angular
 
     $scope.toggleWorkerTypes = function() {
       if ($scope.currentWorkerTypes().length > 0) {
-        for (let workerType in $scope.selectedTCBranch.workerTypes) {
+        for (var workerType in $scope.selectedTCBranch.workerTypes) {
           $scope.selectedTCWorkerTypes[workerType] = false;
         }
         $scope.toggleWorkerTypesButton = false;
 
       } else {
-        for (let workerType in $scope.selectedTCBranch.workerTypes) {
+        for (var workerType in $scope.selectedTCBranch.workerTypes) {
           $scope.selectedTCWorkerTypes[workerType] = true;
         }
         $scope.toggleWorkerTypesButton = true;
