@@ -27,7 +27,7 @@ User Tokens and User Permissions
 
 User tokens which grant permissions that the user no longer posesses are automatically disabled.
 In the UI, they are indicated with a "(DISABLED)" tag.
-Such tokens are not usable for authentication
+Such tokens are not usable for authentication.
 If the user's permissions change back (for example, if the user was misconfigured temporarily), the token will be re-enabled.
 
 Managing Tokens
@@ -52,7 +52,7 @@ Permanent Token (``prm``)
 .........................
 
 A permanent token is issued by an administrator and never expires -- even if that administrator's account is terminated.
-Permannent tokens are used for authentication of other, internal systems to RelengAPI.
+Permanent tokens are used for authentication of other, internal systems to RelengAPI.
 
 A permanent token has attributes ``id``, ``permissions``, and ``description``.
 
