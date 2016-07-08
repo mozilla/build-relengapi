@@ -15,8 +15,8 @@ For example:
 .. code-block:: none
 
     $ curl --data-ascii '{"description": "new token", "permissions": ["base.tokens.issue"]}' \
-        -H 'Content-Type: application/json'
-        -H 'Authorization Bearer your.token.here'
+        -H 'Content-Type: application/json' \
+        -H 'Authorization: Bearer your.token.here' \
         http://api.pub.build.mozilla.org/tokenauth/tokens
 
 API Responses

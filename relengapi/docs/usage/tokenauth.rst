@@ -12,7 +12,7 @@ Tokens are opaque strings (actually JSON Web Tokens) which are provided in the A
 .. code-block:: none
 
     GET /some/resource HTTP/1.1
-    Authorization Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6OSwidiI6MX0.pVmY1aTyASlf24h4acVOiqNgt85mfViXDTvxLsY_qdY
+    Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6OSwidiI6MX0.pVmY1aTyASlf24h4acVOiqNgt85mfViXDTvxLsY_qdY
 
 Each token permits a limited set of permissions, specified when the token is issued.
 
