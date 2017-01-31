@@ -1,14 +1,12 @@
 { relengapi ? { outPath = ./.; name = "relengapi-src"; }
-, pkgs ? import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs-channels/archive/954925771482b50493a24615c6e7e82e044a4fdf.tar.gz") {}
-
-, pythonVersion ? "python27Packages"
+, pkgs ? import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs-channels/archive/f673243aff0bc9ae4d2e96ccd60124ff9fe5b103.tar.gz") {}
 , ldap ? true
 , develop ? true
 }:
 
 let
 
-  pythonPackages = builtins.getAttr pythonVersion pkgs;
+  pythonPackages = pkgs.python27.pkgs;
 
   fromRequirements = requirementsFile: map
     (specification:
@@ -229,8 +227,7 @@ let
       version = "4.0.3";
       md5 = "16d4c8e79510ba427fb5336e15b0ea34";
       deps =
-        (with self; [ decorator pickleshare simplegeneric traitlets requests pexpect ]) ++
-        (with pythonPackages.python.modules; [ readline sqlite3 ]);
+        (with self; [ decorator pickleshare simplegeneric traitlets requests pexpect ]);
       LC_ALL="en_US.UTF-8";
       buildInputs = with self; [ nose pkgs.glibcLocales Pygments mock ];
       patchPhase = ''
@@ -336,7 +333,7 @@ let
       version = "2.4.25";
       md5 = "21523bf21dbe566e0259030f66f7a487";
       deps = [ pkgs.openldap pkgs.cyrus_sasl pkgs.openssl ];
-      NIX_CFLAGS_COMPILE = "-I${pkgs.cyrus_sasl}/include/sasl";
+      NIX_CFLAGS_COMPILE = "-I${pkgs.cyrus_sasl.dev}/include/sasl";
       }
     { name = "python-memcached";
       version = "1.57";
@@ -430,7 +427,7 @@ in pythonPackages.buildPythonPackage rec {
   # TODO: read from requirements-dev.txt
   buildInputs =
     (fromRequirements ./requirements-test.txt)
-    ++ (builtins.attrValues pythonPackages.python.modules)
+    ++ [ pkgs.which pkgs.git ]
     ++ (pkgs.lib.optionals develop (with self; [
       ipdb
     ]));
@@ -438,7 +435,7 @@ in pythonPackages.buildPythonPackage rec {
   propagatedBuildInputs = 
     (fromRequirements ./requirements.txt)
     ++ pkgs.lib.optionals ldap (fromRequirements ./requirements-ldap.txt);
-  doCheck = false;  # TODO: skip tests for now since they dont run in nix's restricted env
+  doCheck = true;  # TODO: skip tests for now since they dont run in nix's restricted env
   checkPhase = ''
     export RELENGAPI_SETTINGS=settings_example.py
     export VIRTUAL_ENV=something
@@ -446,6 +443,6 @@ in pythonPackages.buildPythonPackage rec {
     sh ./validate.sh
   '';
   postShellHook = ''
-    export RELENGAPI_SETTINGS=`pwd`/settings.py
+    export RELENGAPI_SETTINGS=`pwd`/settings_example.py
   '';
 }
