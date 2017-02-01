@@ -18,8 +18,14 @@ URL = "https://mozilla-releng.net/treestatus"
 
 @bp.route('/')
 def home():
-    log.info('Redirecting treestatus frontend')
+    log.info('Redirecting to treestatus.')
     return flask.redirect(URL)
+
+
+@bp.route('/details/<path:tree>')
+def tree_details(tree):
+    log.info('Redirecting to tree: %s.' % tree)
+    return flask.redirect('%s/show/%s' % (URL, tree))
 
 
 @bp.route('/<path:path>')
