@@ -22,14 +22,14 @@ def home():
     return flask.redirect(URL)
 
 
-@bp.route('/details/<path:tree>')
-def tree_details(tree):
-    log.info('Redirecting to tree: %s.' % tree)
-    return flask.redirect('%s/show/%s' % (URL, tree))
-
-
 @bp.route('/<path:path>')
 def proxy_api(path):
+
+    if path.startswith('details/'):
+        tree = path[len('details/'):]
+        log.info('Redirecting to tree: %s.' % tree)
+        return flask.redirect('%s/show/%s' % (URL, tree))
+
     log.info('Proxying treestatus path: ' + path)
 
     # fetch the url, and stream it back
