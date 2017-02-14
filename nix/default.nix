@@ -125,9 +125,12 @@ in python.mkDerivation {
   '';
 
   postShellHook = ''
-    export RELENGAPI_SETTINGS=settings_example.py
+    export RELENGAPI_SETTINGS=settings.py
     export VIRTUAL_ENV=something
     export AUTHENTICATE_MAIL=example@mozilla.com
+    if [ ! -e settings.py ]; then
+      cp settings_example.py settings.py
+    fi
   '';
 
 }
