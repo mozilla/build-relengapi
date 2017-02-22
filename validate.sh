@@ -224,9 +224,14 @@ git_only='
     misc/release.sh
     requirements.txt
     requirements-test.txt
+    requirements-prod.txt
     requirements-ldap.txt
-    default.nix
-    release.nix
+    nix/default.nix
+    nix/nixpkgs.json
+    nix/requirements.nix
+    nix/requirements_frozen.txt
+    nix/requirements_generated.nix
+    nix/requirements_override.nix
 '
 git ls-files . | while read f; do
                     ignore=false
