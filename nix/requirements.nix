@@ -16,8 +16,7 @@ let
   pythonPackages = import "${toString pkgs.path}/pkgs/top-level/python-packages.nix" {
     inherit pkgs;
     inherit (pkgs) stdenv;
-    python = pkgs.python27.override { x11Support=true; };
-    self = pythonPackages;
+    python = pkgs.python27Full;
   };
 
   commonBuildInputs = with pkgs; [ mysql openldap cyrus_sasl openssl zlib postgresql ];
