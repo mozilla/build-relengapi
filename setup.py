@@ -21,17 +21,17 @@ setup(
     install_requires=[
         "Flask",
         "Flask-Login>=0.3.0",
-        "Flask-Browserid",
+        "Flask-BrowserID",
         "Sphinx>=1.3",
         "SQLAlchemy>=0.9.4",
-        "Celery>=3.1.22",  # see https://bugzilla.mozilla.org/show_bug.cgi?id=1254340
+        "celery>=3.1.22",  # see https://bugzilla.mozilla.org/show_bug.cgi?id=1254340
         "alembic>=0.7.0",
         "requests",
         "wrapt",
         "itsdangerous>=0.24",  # 0.23 can sometimes raise TypeError while de-serializing JWTs
         "blinker",  # required to use flask signals
         "pytz",
-        "wsme<0.8",  # see https://github.com/mozilla/build-relengapi/issues/325
+        "WSME<0.8",  # see https://github.com/mozilla/build-relengapi/issues/325
         "croniter",
         "python-dateutil",
         "simplejson",
@@ -43,8 +43,8 @@ setup(
         "redo",
         "bzrest>=1.1",
         "structlog",
-        "mozdef_client",
-        "requests_futures",
+        "mozdef-client",
+        "requests-futures",
         "taskcluster",
     ],
     extras_require={
