@@ -42,7 +42,7 @@ class Project(db.declarative_base('mapper')):
     """Object-relational mapping between python class Project
     and database table "projects"
     """
-    __tablename__ = 'projects'
+    __tablename__ = 'releng_mapper_projects'
     id = sa.Column(sa.Integer, primary_key=True)
     name = sa.Column(sa.String(255), nullable=False, unique=True)
 
@@ -52,11 +52,11 @@ class Hash(db.declarative_base('mapper')):
     """Object-relational mapping between python class Hash
     and database table "hashes"
     """
-    __tablename__ = 'hashes'
+    __tablename__ = 'releng_mapper_hashes'
     hg_changeset = sa.Column(sa.String(40), nullable=False)
     git_commit = sa.Column(sa.String(40), nullable=False)
     project_id = sa.Column(
-        sa.Integer, sa.ForeignKey('projects.id'), nullable=False)
+        sa.Integer, sa.ForeignKey('releng_mapper_projects.id'), nullable=False)
     project = orm.relationship(Project, primaryjoin=(project_id == Project.id))
     # project = orm.relationship(Project, backref=orm.backref('hashes', order_by=id))
     date_added = sa.Column(sa.Integer, nullable=False)
