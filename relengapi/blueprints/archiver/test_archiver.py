@@ -50,7 +50,7 @@ cfg = {
     'CELERY_ALWAYS_EAGER': True,
 }
 
-test_context = TestContext(config=cfg, databases=['relengapi'])
+test_context = TestContext(config=cfg, databases=['archiver'])
 
 
 def create_fake_tracker_row(app, id, s3_key='key', created_at=None, pending_expires_at=None,
