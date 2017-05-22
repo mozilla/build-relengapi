@@ -15,6 +15,5 @@ Subsequent sections describe the interfaces provided by the individual component
     mapper
     clobberer
     tooltool
-    slaveloan
     archiver
     treestatus

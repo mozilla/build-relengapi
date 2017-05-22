@@ -15,7 +15,6 @@ This is mostly limited to system administrators and those responsible for config
     badpenny
     sqs
     tooltool
-    slaveloan
     archiver
     clobberer
     alembic
