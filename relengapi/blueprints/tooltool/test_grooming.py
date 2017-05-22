@@ -38,7 +38,7 @@ cfg = {
         'us-west-2': 'tt-usw2',
     }
 }
-test_context = TestContext(config=cfg, databases=['relengapi'])
+test_context = TestContext(config=cfg, databases=['tooltool'])
 
 
 def assert_file_instances(app, digest, exp_regions):
@@ -50,7 +50,7 @@ def assert_file_instances(app, digest, exp_regions):
 
 
 def add_file_row(size, sha512, instances=[]):
-    session = current_app.db.session('relengapi')
+    session = current_app.db.session('tooltool')
     file_row = tables.File(size=size, visibility='public', sha512=sha512)
     session.add(file_row)
     for region in instances:
@@ -60,7 +60,7 @@ def add_file_row(size, sha512, instances=[]):
 
 
 def add_pending_upload_and_file_row(size, sha512, expires, region):
-    session = current_app.db.session('relengapi')
+    session = current_app.db.session('tooltool')
     file_row = tables.File(size=size, visibility='public', sha512=sha512)
     pu_row = tables.PendingUpload(
         file=file_row, expires=expires, region=region)
@@ -157,7 +157,7 @@ def test_check_pending_upload_not_expired(app):
         expires = time.now() + timedelta(seconds=10)  # 10s shy
         pu_row, file_row = add_pending_upload_and_file_row(
             len(DATA), DATA_DIGEST, expires, 'us-west-2')
-        session = app.db.session('relengapi')
+        session = app.db.session('tooltool')
         grooming.check_pending_upload(session, pu_row)
         session.commit()
         eq_(len(tables.PendingUpload.query.all()), 1)  # PU still exists
@@ -169,7 +169,7 @@ def test_check_pending_upload_abandoned(app):
     with app.app_context():
         pu_row, file_row = add_pending_upload_and_file_row(
             len(DATA), DATA_DIGEST, datetime(1999, 1, 1), 'us-west-2')
-        session = app.db.session('relengapi')
+        session = app.db.session('tooltool')
         grooming.check_pending_upload(session, pu_row)
         session.commit()
         eq_(tables.PendingUpload.query.all(), [])  # PU is deleted
@@ -183,7 +183,7 @@ def test_check_pending_upload_bad_region(app):
         expires = time.now() - timedelta(seconds=90)
         pu_row, file_row = add_pending_upload_and_file_row(
             len(DATA), DATA_DIGEST, expires, 'us-west-1')
-        session = app.db.session('relengapi')
+        session = app.db.session('tooltool')
         grooming.check_pending_upload(session, pu_row)
         session.commit()
         eq_(tables.PendingUpload.query.all(), [])  # PU is deleted
@@ -198,7 +198,7 @@ def test_check_pending_upload_no_upload(app):
         expires = time.now() - timedelta(seconds=90)
         pu_row, file_row = add_pending_upload_and_file_row(
             len(DATA), DATA_DIGEST, expires, 'us-west-2')
-        session = app.db.session('relengapi')
+        session = app.db.session('tooltool')
         grooming.check_pending_upload(session, pu_row)
         session.commit()
         # PU has not been deleted
@@ -215,7 +215,7 @@ def test_check_pending_upload_not_valid(app):
         pu_row, file_row = add_pending_upload_and_file_row(
             len(DATA), DATA_DIGEST, expires, 'us-west-2')
         make_key(app, 'us-west-2', 'tt-usw2', DATA_KEY, 'xxx')
-        session = app.db.session('relengapi')
+        session = app.db.session('tooltool')
         grooming.check_pending_upload(session, pu_row)
         session.commit()
         eq_(tables.PendingUpload.query.all(), [])  # PU is deleted
@@ -233,7 +233,7 @@ def test_check_pending_upload_race(app):
         pu_row, file_row = add_pending_upload_and_file_row(
             len(DATA), DATA_DIGEST, expires, 'us-west-2')
         make_key(app, 'us-west-2', 'tt-usw2', DATA_KEY, DATA)
-        session = app.db.session('relengapi')
+        session = app.db.session('tooltool')
 
         def test_shim():
             session.add(tables.FileInstance(file=file_row, region='us-west-2'))
@@ -254,7 +254,7 @@ def test_check_pending_upload_success(app):
         pu_row, file_row = add_pending_upload_and_file_row(
             len(DATA), DATA_DIGEST, expires, 'us-west-2')
         make_key(app, 'us-west-2', 'tt-usw2', DATA_KEY, DATA)
-        session = app.db.session('relengapi')
+        session = app.db.session('tooltool')
         grooming.check_pending_upload(session, pu_row)
         session.commit()
         eq_(tables.PendingUpload.query.all(), [])  # PU is deleted
@@ -319,7 +319,7 @@ def test_replicate_file_no_instances(app):
     with app.app_context():
         # us-west-1 isn't in cfg['TOOLTOOL_REGIONS']
         file = add_file_row(len(DATA), DATA_DIGEST, instances=['us-west-1'])
-        grooming.replicate_file(app.db.session('relengapi'), file)
+        grooming.replicate_file(app.db.session('tooltool'), file)
     assert_file_instances(app, DATA_DIGEST, ['us-west-1'])
 
 
@@ -332,7 +332,7 @@ def test_replicate_file_already_exists(app):
         file = add_file_row(len(DATA), DATA_DIGEST, instances=['us-east-1'])
         make_key(app, 'us-east-1', 'tt-use1', util.keyname(DATA_DIGEST), DATA)
         make_key(app, 'us-west-2', 'tt-usw2', util.keyname(DATA_DIGEST), "BAD")
-        grooming.replicate_file(app.db.session('relengapi'), file)
+        grooming.replicate_file(app.db.session('tooltool'), file)
     assert_file_instances(app, DATA_DIGEST, ['us-east-1', 'us-west-2'])
     assert key_exists(app, 'us-east-1', 'tt-use1', util.keyname(DATA_DIGEST))
     k = key_exists(app, 'us-west-2', 'tt-usw2', util.keyname(DATA_DIGEST))
@@ -348,7 +348,7 @@ def test_replicate_file(app):
         file = add_file_row(len(DATA), DATA_DIGEST, instances=['us-east-1'])
         make_key(app, 'us-east-1', 'tt-use1', util.keyname(DATA_DIGEST), DATA)
         make_bucket(app, 'us-west-2', 'tt-usw2')
-        grooming.replicate_file(app.db.session('relengapi'), file)
+        grooming.replicate_file(app.db.session('tooltool'), file)
     assert_file_instances(app, DATA_DIGEST, ['us-east-1', 'us-west-2'])
     assert key_exists(app, 'us-east-1', 'tt-use1', util.keyname(DATA_DIGEST))
     assert key_exists(app, 'us-west-2', 'tt-usw2', util.keyname(DATA_DIGEST))
@@ -366,9 +366,9 @@ def test_replicate_file_race(app):
         make_bucket(app, 'us-west-2', 'tt-usw2')
 
         def test_shim():
-            session = app.db.session('relengapi')
+            session = app.db.session('tooltool')
             session.add(tables.FileInstance(file=file, region='us-west-2'))
             session.commit()
-        grooming.replicate_file(app.db.session('relengapi'), file,
+        grooming.replicate_file(app.db.session('tooltool'), file,
                                 _test_shim=test_shim)
     assert_file_instances(app, DATA_DIGEST, ['us-east-1', 'us-west-2'])

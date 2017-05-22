@@ -8,10 +8,11 @@ from __future__ import absolute_import
 # configured with a key in this dictionary.  For example:
 #
 # SQLALCHEMY_DATABASE_URIS = {
-#   'relengapi': 'sqlite:////tmp/relengapi.db',
 #   'archiver': 'sqlite:////tmp/archiver.db',
 #   'clobberer': 'sqlite:////tmp/clobberer.db',
 #   'mapper': 'sqlite:////tmp/mapper.db',
+#   'relengapi': 'sqlite:////tmp/relengapi.db',
+#   'tooltool': 'sqlite:////tmp/tooltool.db',
 #   'treestatus': 'sqlite:////tmp/treestatus.db',
 #    # .. add other database URIs here, as appropriate for the blueprints
 # }
