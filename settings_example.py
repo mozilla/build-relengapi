@@ -8,13 +8,7 @@ from __future__ import absolute_import
 # configured with a key in this dictionary.  For example:
 #
 # SQLALCHEMY_DATABASE_URIS = {
-#   'archiver': 'sqlite:////tmp/archiver.db',
-#   'clobberer': 'sqlite:////tmp/clobberer.db',
-#   'mapper': 'sqlite:////tmp/mapper.db',
-#   'relengapi': 'sqlite:////tmp/relengapi.db',
-#   'tooltool': 'sqlite:////tmp/tooltool.db',
-#   'treestatus': 'sqlite:////tmp/treestatus.db',
-#    # .. add other database URIs here, as appropriate for the blueprints
+#    'heroku': 'sqlite:////tmp/all.db',
 # }
 #
 # You can use any SQLAlchemy-style database URI.  The default, if no URI

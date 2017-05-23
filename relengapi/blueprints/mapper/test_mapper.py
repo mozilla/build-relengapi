@@ -31,21 +31,21 @@ SHAFILE = "%s %s\n%s %s\n%s %s\n" % (
 
 
 def db_setup(app):
-    session = app.db.session('mapper')
+    session = app.db.session('heroku')
     project = Project(name='proj')
     session.add(project)
     session.commit()
 
 
 def db_teardown(app):
-    session = app.db.session('mapper')
+    session = app.db.session('heroku')
     session.query(Hash).delete()
     session.query(Project).delete()
     session.commit()
 
 
 def set_projects(app, new_list=[]):
-    session = app.db.session('mapper')
+    session = app.db.session('heroku')
     session.query(Project).delete()
     for new_proj in new_list:
         project = Project(name=new_proj)
@@ -64,7 +64,7 @@ class User(auth.BaseUser):
             p.mapper.project.insert,
         ]
 
-test_context = TestContext(databases=['mapper'],
+test_context = TestContext(databases=['heroku'],
                            user=User(),
                            db_setup=db_setup,
                            db_teardown=db_teardown,
@@ -72,7 +72,7 @@ test_context = TestContext(databases=['mapper'],
 
 
 def insert_some_hashes(app):
-    session = app.db.session('mapper')
+    session = app.db.session('heroku')
     project = session.query(Project).filter(Project.name == 'proj').one()
     session.add(
         Hash(git_commit=SHA1, hg_changeset=SHA1R, project=project, date_added=12345))
@@ -84,7 +84,7 @@ def insert_some_hashes(app):
 
 
 def hash_pair_exists(app, git, hg):
-    session = app.db.session('mapper')
+    session = app.db.session('heroku')
     try:
         session.query(Hash).filter(Hash.hg_changeset == hg).filter(
             Hash.git_commit == git).one()

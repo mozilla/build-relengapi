@@ -146,7 +146,7 @@ def upload_batch(region=None, body=None):
         if not prm or not prm.can():
             raise Forbidden("no permission to upload {} files".format(v))
 
-    session = g.db.session('tooltool')
+    session = g.db.session('heroku')
     batch = tables.Batch(
         uploaded=time.now(),
         author=body.author,
@@ -240,7 +240,7 @@ def upload_complete(digest):
 def search_files(q):
     """Search for files matching the query ``q``.  The query matches against
     prefixes of hashes (at least 8 characters) or against filenames."""
-    session = g.db.session('tooltool')
+    session = g.db.session('heroku')
     query = session.query(tables.File).join(tables.BatchFile)
     query = query.filter(sa.or_(
         tables.BatchFile.filename.contains(q),
@@ -283,7 +283,7 @@ def patch_file(digest, body):
 
     The returned File instance contains an ``instances`` attribute showing any
     changes."""
-    session = current_app.db.session('tooltool')
+    session = current_app.db.session('heroku')
     file = session.query(tables.File).filter(tables.File.sha512 == digest).first()
     if not file:
         raise NotFound

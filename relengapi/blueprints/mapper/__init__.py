@@ -37,7 +37,7 @@ p.mapper.project.insert.doc("Allows new projects to be inserted into "
 # - http://flask.pocoo.org/docs/patterns/apierrors/
 
 
-class Project(db.declarative_base('mapper')):
+class Project(db.declarative_base('heroku')):
 
     """Object-relational mapping between python class Project
     and database table "projects"
@@ -47,7 +47,7 @@ class Project(db.declarative_base('mapper')):
     name = sa.Column(sa.String(255), nullable=False, unique=True)
 
 
-class Hash(db.declarative_base('mapper')):
+class Hash(db.declarative_base('heroku')):
 
     """Object-relational mapping between python class Hash
     and database table "hashes"
@@ -254,7 +254,7 @@ def get_mapfile_since(projects, since):
 @bp.route('/projects', methods=('GET',))
 def get_projects():
     # (documentation in relengapi/docs/usage/mapper.rst)
-    session = g.db.session('mapper')
+    session = g.db.session('heroku')
     q = session.query(Project)
     rows = q.all()
     return jsonify(projects=[x.name for x in rows])
@@ -281,7 +281,7 @@ def _insert_many(project, ignore_dups=False):
     if request.content_type != 'text/plain':
         abort(
             400, "HTTP request header 'Content-Type' must be set to 'text/plain'")
-    session = g.db.session('mapper')
+    session = g.db.session('heroku')
     proj = _get_project(session, project)  # can raise HTTP 404 or HTTP 500
     for line in request.stream.readlines():
         line = line.rstrip()
@@ -333,7 +333,7 @@ def insert_many_ignore_dups(project):
 @p.mapper.mapping.insert.require()
 def insert_one(project, git_commit, hg_changeset):
     # (documentation in relengapi/docs/usage/mapper.rst)
-    session = g.db.session('mapper')
+    session = g.db.session('heroku')
     proj = _get_project(session, project)  # can raise HTTP 404 or HTTP 500
     _add_hash(session, git_commit, hg_changeset, proj)  # can raise HTTP 400
     try:
@@ -356,7 +356,7 @@ def insert_one(project, git_commit, hg_changeset):
 @p.mapper.project.insert.require()
 def add_project(project):
     # (documentation in relengapi/docs/usage/mapper.rst)
-    session = g.db.session('mapper')
+    session = g.db.session('heroku')
     p = Project(name=project)
     session.add(p)
     try:

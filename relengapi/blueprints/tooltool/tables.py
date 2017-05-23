@@ -12,7 +12,7 @@ from relengapi.lib import db
 allowed_regions = ('us-east-1', 'us-west-1', 'us-west-2')
 
 
-class File(db.declarative_base('tooltool')):
+class File(db.declarative_base('heroku')):
 
     """An file, identified by size and digest.  The server may have zero
     or many copies of a file."""
@@ -44,7 +44,7 @@ class File(db.declarative_base('tooltool')):
         return rv
 
 
-class FileInstance(db.declarative_base('tooltool')):
+class FileInstance(db.declarative_base('heroku')):
 
     """A verified instance of a file in a single region."""
 
@@ -56,7 +56,7 @@ class FileInstance(db.declarative_base('tooltool')):
         sa.Enum(*allowed_regions), primary_key=True)
 
 
-class BatchFile(db.declarative_base('tooltool')):
+class BatchFile(db.declarative_base('heroku')):
 
     """An association of upload batches to files, with filenames"""
 
@@ -70,7 +70,7 @@ class BatchFile(db.declarative_base('tooltool')):
     filename = sa.Column(sa.Text, nullable=False)
 
 
-class Batch(db.declarative_base('tooltool')):
+class Batch(db.declarative_base('heroku')):
 
     """Upload batches, with batch metadata, linked to the uploaded files"""
 
@@ -96,7 +96,7 @@ class Batch(db.declarative_base('tooltool')):
             files={n: f.to_json() for n, f in self.files.iteritems()})
 
 
-class PendingUpload(db.declarative_base('tooltool')):
+class PendingUpload(db.declarative_base('heroku')):
 
     """Files for which upload URLs have been generated, but which haven't yet
     been uploaded.  This table is used to poll for completed uploads, and to

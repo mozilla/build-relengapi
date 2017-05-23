@@ -5,7 +5,7 @@ import sqlalchemy as sa
 from relengapi.lib import db
 
 
-class ArchiverTask(db.declarative_base('archiver')):
+class ArchiverTask(db.declarative_base('heroku')):
     __tablename__ = 'releng_archiver_tasks'
     id = sa.Column(sa.Integer, primary_key=True)
     task_id = sa.Column(sa.String(100), nullable=False, unique=True)

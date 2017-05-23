@@ -31,7 +31,7 @@ FINISHED_STATES = ['SUCCESS', 'FAILURE', 'REVOKED']
 
 
 def delete_tracker(tracker):
-    session = current_app.db.session('archiver')
+    session = current_app.db.session('heroku')
     logger.info("deleting tracker with id: {}".format(tracker.task_id),
                 archiver_task=tracker.task_id)
     session.delete(tracker)
@@ -39,7 +39,7 @@ def delete_tracker(tracker):
 
 
 def update_tracker_state(tracker, state):
-    session = current_app.db.session('archiver')
+    session = current_app.db.session('heroku')
     logger.info("updating tracker with id: {} to state: {}".format(tracker.id, state),
                 archiver_task=tracker.task_id, archiver_task_state=state)
     try:
@@ -52,7 +52,7 @@ def update_tracker_state(tracker, state):
 @badpenny.periodic_task(seconds=TASK_TIME_OUT)
 def cleanup_old_tasks(job_status):
     """delete any tracker task if it is older than the time a task can live for."""
-    session = current_app.db.session('archiver')
+    session = current_app.db.session('heroku')
     expiry_cutoff = now() - datetime.timedelta(seconds=TASK_TIME_OUT)
     table = tables.ArchiverTask
     for tracker in session.query(table).order_by(table.created_at):
@@ -64,7 +64,7 @@ def cleanup_old_tasks(job_status):
 
 def renew_tracker_pending_expiry(tracker):
     pending_expires_at = now() + datetime.timedelta(seconds=PENDING_EXPIRES_IN)
-    session = current_app.db.session('archiver')
+    session = current_app.db.session('heroku')
     logger.info("renewing tracker {} with pending expiry: {}".format(
                 tracker.id, pending_expires_at), archiver_task=tracker.task_id)
     tracker.pending_expires_at = pending_expires_at
@@ -173,7 +173,7 @@ def get_archive(src_url, key, preferred_region):
     region = preferred_region if preferred_region and preferred_region in buckets else random_region
     bucket = buckets[region]
     s3 = current_app.aws.connect_to('s3', region)
-    session = current_app.db.session('archiver')
+    session = current_app.db.session('heroku')
 
     # first, see if the key exists
     if not s3.get_bucket(bucket).get_key(key):
