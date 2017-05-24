@@ -41,7 +41,7 @@ cfg = {
         'us-west-2': 'tt-usw2',
     }
 }
-test_context = TestContext(config=cfg, databases=['heroku'],
+test_context = TestContext(config=cfg, databases=[tables.DB_DECLARATIVE_BASE],
                            user=userperms([p.tooltool.download.public,
                                            p.tooltool.upload.public]))
 
@@ -89,7 +89,7 @@ def upload_batch(client, batch, region=None):
 def add_file_to_db(app, content, regions=['us-east-1'],
                    pending_regions=[], visibility='public'):
     with app.app_context():
-        session = app.db.session('heroku')
+        session = app.db.session(tables.DB_DECLARATIVE_BASE)
         file_row = tables.File(size=len(content),
                                visibility=visibility,
                                sha512=hashlib.sha512(content).hexdigest())
@@ -109,7 +109,7 @@ def add_file_to_db(app, content, regions=['us-east-1'],
 
 def add_batch_to_db(app, author, message, files):
     with app.app_context():
-        session = app.db.session('heroku')
+        session = app.db.session(tables.DB_DECLARATIVE_BASE)
         batch = tables.Batch(author=author, message=message,
                              uploaded=relengapi_time.now())
         session.add(batch)

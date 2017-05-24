@@ -11,13 +11,13 @@ from relengapi.blueprints.tooltool import tables
 from relengapi.lib import time
 from relengapi.lib.testing.context import TestContext
 
-test_context = TestContext(databases=['heroku'])
+test_context = TestContext(databases=[tables.DB_DECLARATIVE_BASE])
 
 
 @test_context
 def test_file_batches_relationship(app):
     with app.app_context():
-        session = app.db.session('heroku')
+        session = app.db.session(tables.DB_DECLARATIVE_BASE)
 
         file = tables.File(size=100, sha512='abcd', visibility='internal')
         session.add(file)

@@ -12,9 +12,9 @@ from relengapi.lib import db
 
 
 class BadpennyJobLog(db.declarative_base('relengapi')):
-    __tablename__ = 'badpenny_job_logs'
+    __tablename__ = 'relengapi_badpenny_job_logs'
 
-    id = sa.Column(sa.Integer, sa.ForeignKey('badpenny_jobs.id'),
+    id = sa.Column(sa.Integer, sa.ForeignKey('relengapi_badpenny_jobs.id'),
                    primary_key=True)
 
     # 'logs' is free-form, hopefully brief, log text
@@ -22,10 +22,10 @@ class BadpennyJobLog(db.declarative_base('relengapi')):
 
 
 class BadpennyJob(db.declarative_base('relengapi')):
-    __tablename__ = 'badpenny_jobs'
+    __tablename__ = 'relengapi_badpenny_jobs'
 
     id = sa.Column(sa.Integer, primary_key=True)
-    task_id = sa.Column(sa.Integer, sa.ForeignKey('badpenny_tasks.id'),
+    task_id = sa.Column(sa.Integer, sa.ForeignKey('relengapi_badpenny_tasks.id'),
                         nullable=False)
     task = sa.orm.relationship('BadpennyTask')
 
@@ -48,7 +48,7 @@ class BadpennyJob(db.declarative_base('relengapi')):
 
 
 class BadpennyTask(db.declarative_base('relengapi'), db.UniqueMixin):
-    __tablename__ = 'badpenny_tasks'
+    __tablename__ = 'relengapi_badpenny_tasks'
 
     id = sa.Column(sa.Integer, primary_key=True)
     name = sa.Column(sa.Text, nullable=False)

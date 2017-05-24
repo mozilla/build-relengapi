@@ -101,7 +101,7 @@ class Alchemies(object):
             except AttributeError:
                 create_engine = self.create_generic_engine
 
-            self._engines[dbname] = create_engine(u)
+            self._engines[dbname] = create_engine(u, pool_size=3, max_overflow=1)
         return self._engines[dbname]
 
     def create_generic_engine(self, url):

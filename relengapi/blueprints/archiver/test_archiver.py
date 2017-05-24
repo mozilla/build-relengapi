@@ -50,7 +50,7 @@ cfg = {
     'CELERY_ALWAYS_EAGER': True,
 }
 
-test_context = TestContext(config=cfg, databases=['heroku'])
+test_context = TestContext(config=cfg, databases=[tables.DB_DECLARATIVE_BASE])
 
 
 def create_fake_tracker_row(app, id, s3_key='key', created_at=None, pending_expires_at=None,
@@ -61,7 +61,7 @@ def create_fake_tracker_row(app, id, s3_key='key', created_at=None, pending_expi
         created_at = now
     if not pending_expires_at:
         pending_expires_at = pending_expiry
-    session = app.db.session('heroku')
+    session = app.db.session(tables.DB_DECLARATIVE_BASE)
     session.add(
         tables.ArchiverTask(task_id=id, s3_key=s3_key, created_at=created_at,
                             pending_expires_at=pending_expires_at, src_url=src_url, state=state)
@@ -262,7 +262,7 @@ def test_tracker_added_when_celery_task_is_created(app, client):
 def test_tracker_is_updated_when_task_state_changes_but_is_not_complete(app, client):
     with app.app_context():
         task_id = 'foo'
-        session = app.db.session('heroku')
+        session = app.db.session(tables.DB_DECLARATIVE_BASE)
         now = datetime.datetime(2015, 7, 14, 23, 19, 42, tzinfo=pytz.UTC)  # freeze time
         pending_expiry = now + datetime.timedelta(seconds=60)
         session.add(tables.ArchiverTask(task_id=task_id, s3_key='key', created_at=now,
@@ -281,7 +281,7 @@ def test_tracker_is_updated_when_task_state_changes_but_is_not_complete(app, cli
 def test_tracker_is_deleted_when_task_status_shows_task_complete(app, client):
     with app.app_context():
         task_id = 'foo'
-        session = app.db.session('heroku')
+        session = app.db.session(tables.DB_DECLARATIVE_BASE)
         now = datetime.datetime(2015, 7, 14, 23, 19, 42, tzinfo=pytz.UTC)  # freeze time
         pending_expiry = now + datetime.timedelta(seconds=60)
         session.add(tables.ArchiverTask(task_id=task_id, s3_key='key', created_at=now,
@@ -335,7 +335,7 @@ def test_tracker_is_deleted_when_task_is_complete_but_s3_url_not_present(app, cl
 def test_task_tracker_badpenny_cleanup(app, client):
     now = datetime.datetime(2015, 7, 14, 23, 19, 42, tzinfo=pytz.UTC)  # freeze time
     with app.app_context():
-        session = app.db.session('heroku')
+        session = app.db.session(tables.DB_DECLARATIVE_BASE)
         with mock.patch('relengapi.blueprints.archiver.now') as time_traveller:
             time_traveller.return_value = now
 

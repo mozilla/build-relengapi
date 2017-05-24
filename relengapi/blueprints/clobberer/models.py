@@ -24,7 +24,7 @@ class ClobbererBase(db.declarative_base(DB_DECLARATIVE_BASE)):
 class Build(ClobbererBase, db.UniqueMixin):
     "A clobberable build."
 
-    __tablename__ = 'builds'
+    __tablename__ = 'releng_clobberer_builds'
 
     buildername = sa.Column(sa.String(100))
     last_build_time = sa.Column(
@@ -49,7 +49,7 @@ class Build(ClobbererBase, db.UniqueMixin):
 class ClobberTime(ClobbererBase, db.UniqueMixin):
     "A clobber request."
 
-    __tablename__ = 'clobber_times'
+    __tablename__ = 'releng_clobberer_times'
     __table_args__ = (
         # Index to speed up lastclobber lookups
         sa.Index('ix_get_clobber_times', 'slave', 'builddir', 'branch'),

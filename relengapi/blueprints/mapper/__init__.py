@@ -24,6 +24,8 @@ from sqlalchemy.orm.exc import NoResultFound
 from relengapi.lib import db
 from relengapi.lib.permissions import p
 
+DB_DECLARATIVE_BASE = 'relengapi'
+
 logger = structlog.get_logger()
 # logging.basicConfig(level=logging.DEBUG)
 bp = Blueprint('mapper', __name__)
@@ -37,7 +39,7 @@ p.mapper.project.insert.doc("Allows new projects to be inserted into "
 # - http://flask.pocoo.org/docs/patterns/apierrors/
 
 
-class Project(db.declarative_base('heroku')):
+class Project(db.declarative_base(DB_DECLARATIVE_BASE)):
 
     """Object-relational mapping between python class Project
     and database table "projects"
@@ -47,7 +49,7 @@ class Project(db.declarative_base('heroku')):
     name = sa.Column(sa.String(255), nullable=False, unique=True)
 
 
-class Hash(db.declarative_base('heroku')):
+class Hash(db.declarative_base(DB_DECLARATIVE_BASE)):
 
     """Object-relational mapping between python class Hash
     and database table "hashes"
@@ -254,7 +256,7 @@ def get_mapfile_since(projects, since):
 @bp.route('/projects', methods=('GET',))
 def get_projects():
     # (documentation in relengapi/docs/usage/mapper.rst)
-    session = g.db.session('heroku')
+    session = g.db.session(DB_DECLARATIVE_BASE)
     q = session.query(Project)
     rows = q.all()
     return jsonify(projects=[x.name for x in rows])
@@ -281,7 +283,7 @@ def _insert_many(project, ignore_dups=False):
     if request.content_type != 'text/plain':
         abort(
             400, "HTTP request header 'Content-Type' must be set to 'text/plain'")
-    session = g.db.session('heroku')
+    session = g.db.session(DB_DECLARATIVE_BASE)
     proj = _get_project(session, project)  # can raise HTTP 404 or HTTP 500
     for line in request.stream.readlines():
         line = line.rstrip()
@@ -333,7 +335,7 @@ def insert_many_ignore_dups(project):
 @p.mapper.mapping.insert.require()
 def insert_one(project, git_commit, hg_changeset):
     # (documentation in relengapi/docs/usage/mapper.rst)
-    session = g.db.session('heroku')
+    session = g.db.session(DB_DECLARATIVE_BASE)
     proj = _get_project(session, project)  # can raise HTTP 404 or HTTP 500
     _add_hash(session, git_commit, hg_changeset, proj)  # can raise HTTP 400
     try:
@@ -356,7 +358,7 @@ def insert_one(project, git_commit, hg_changeset):
 @p.mapper.project.insert.require()
 def add_project(project):
     # (documentation in relengapi/docs/usage/mapper.rst)
-    session = g.db.session('heroku')
+    session = g.db.session(DB_DECLARATIVE_BASE)
     p = Project(name=project)
     session.add(p)
     try:

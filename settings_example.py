@@ -8,7 +8,7 @@ from __future__ import absolute_import
 # configured with a key in this dictionary.  For example:
 #
 # SQLALCHEMY_DATABASE_URIS = {
-#    'heroku': 'sqlite:////tmp/all.db',
+#    'relengapi': 'sqlite:////tmp/all.db',
 # }
 #
 # You can use any SQLAlchemy-style database URI.  The default, if no URI
@@ -39,3 +39,8 @@ RELENGAPI_PERMISSIONS = {
 # ===== Celery =====
 # Any Celery configuration option can be included here; see
 # http://docs.celeryproject.org/en/master/configuration.html#configuration
+
+# CELERY_RESULT_DB_TABLENAMES = {
+#     'task': 'relengapi_celery_taskmeta',
+#     'group': 'relengapi_celery_groupmeta',
+# }

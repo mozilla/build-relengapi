@@ -12,7 +12,7 @@ from relengapi.lib.permissions import p
 
 
 class Token(db.declarative_base('relengapi')):
-    __tablename__ = 'auth_tokens'
+    __tablename__ = 'relengapi_auth_tokens'
 
     def __init__(self, permissions=None, **kwargs):
         if permissions is not None:

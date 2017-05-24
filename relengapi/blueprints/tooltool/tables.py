@@ -10,9 +10,10 @@ from relengapi.blueprints.tooltool import types
 from relengapi.lib import db
 
 allowed_regions = ('us-east-1', 'us-west-1', 'us-west-2')
+DB_DECLARATIVE_BASE = 'relengapi'
 
 
-class File(db.declarative_base('heroku')):
+class File(db.declarative_base(DB_DECLARATIVE_BASE)):
 
     """An file, identified by size and digest.  The server may have zero
     or many copies of a file."""
@@ -44,7 +45,7 @@ class File(db.declarative_base('heroku')):
         return rv
 
 
-class FileInstance(db.declarative_base('heroku')):
+class FileInstance(db.declarative_base(DB_DECLARATIVE_BASE)):
 
     """A verified instance of a file in a single region."""
 
@@ -56,7 +57,7 @@ class FileInstance(db.declarative_base('heroku')):
         sa.Enum(*allowed_regions), primary_key=True)
 
 
-class BatchFile(db.declarative_base('heroku')):
+class BatchFile(db.declarative_base(DB_DECLARATIVE_BASE)):
 
     """An association of upload batches to files, with filenames"""
 
@@ -70,7 +71,7 @@ class BatchFile(db.declarative_base('heroku')):
     filename = sa.Column(sa.Text, nullable=False)
 
 
-class Batch(db.declarative_base('heroku')):
+class Batch(db.declarative_base(DB_DECLARATIVE_BASE)):
 
     """Upload batches, with batch metadata, linked to the uploaded files"""
 
@@ -96,7 +97,7 @@ class Batch(db.declarative_base('heroku')):
             files={n: f.to_json() for n, f in self.files.iteritems()})
 
 
-class PendingUpload(db.declarative_base('heroku')):
+class PendingUpload(db.declarative_base(DB_DECLARATIVE_BASE)):
 
     """Files for which upload URLs have been generated, but which haven't yet
     been uploaded.  This table is used to poll for completed uploads, and to

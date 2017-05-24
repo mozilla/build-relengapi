@@ -23,7 +23,7 @@ logger = structlog.get_logger()
 @badpenny.periodic_task(seconds=600)
 def check_pending_uploads(job_status):
     """Check for any pending uploads and verify them if found."""
-    session = current_app.db.session('heroku')
+    session = current_app.db.session(tables.DB_DECLARATIVE_BASE)
     for pu in tables.PendingUpload.query.all():
         check_pending_upload(session, pu)
     session.commit()
@@ -37,7 +37,7 @@ def replicate(job_status):
     num_regions = len(current_app.config['TOOLTOOL_REGIONS'])
     fi_tbl = tables.FileInstance
     f_tbl = tables.File
-    session = current_app.db.session('heroku')
+    session = current_app.db.session(tables.DB_DECLARATIVE_BASE)
     subq = session.query(
         fi_tbl.file_id,
         sa.func.count('*').label('instance_count'))
@@ -96,7 +96,7 @@ def replicate_file(session, file, _test_shim=lambda: None):
 @celery.task
 def check_file_pending_uploads(sha512):
     """Check for pending uploads for a single file"""
-    session = current_app.db.session('heroku')
+    session = current_app.db.session(tables.DB_DECLARATIVE_BASE)
     file = tables.File.query.filter(tables.File.sha512 == sha512).first()
     if file:
         for pu in file.pending_uploads:
